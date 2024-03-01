@@ -31,6 +31,8 @@ class LoadMsg:
         )
 
     def load_msg(self, messages):
+        self.session.query(Message).delete()
+        self.session.commit()
         for data in messages:
             msg = self.create_msg(data)
             self.session.add(msg)
