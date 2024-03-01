@@ -1,0 +1,32 @@
+[
+  {
+    "key": "/start",
+    "text": "Hi, please choose one of the following options \ud83d\udc47\ud83c\udffb",
+    "keys": "\ud83d\ude80 Send tg Msg\n\ud83d\udcca Status\n\ud83d\uddc2 Add Msgs\n\ud83d\udce8 Add Gmails",
+    "keys_per_row": 2
+  },
+  {
+    "key": "Send tg Msg \ud83d\ude80",
+    "text": "To start the send msg process, please provide the number of messages you want to send.",
+    "keys": "\ud83c\udfdb Back",
+    "keys_per_row": 2
+  },
+  {
+    "key": "\ud83d\udcca Status",
+    "text": "Total Send: {total_count}\nTotal Gmail: {gmail_count}\n.",
+    "keys": "",
+    "keys_per_row": 1
+  },
+  {
+    "key": "\ud83d\uddc2 Add Msg",
+    "text": "Send your message directly OR use previous messages OR send a message file.",
+    "keys": "\u267b\ufe0f Previous msg\n\ud83c\udfdb Back",
+    "keys_per_row": 1
+  },
+  {
+    "key": "\ud83d\udce8 Add Gmail",
+    "text": "Please Send your gmail file OR gmail directly\nfor example: user@gmail.com:app_passwprd:phone_number",
+    "keys": "\ud83c\udfdb Back",
+    "keys_per_row": 1
+  }
+]
