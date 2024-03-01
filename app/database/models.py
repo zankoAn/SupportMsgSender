@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Integer, String, ForeignKey, INTEGER
+from sqlalchemy import Column, Integer, String, ForeignKey, INTEGER, Enum
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -22,6 +22,7 @@ class User(Base, BaseAttributes):
     chat_id = Column(Integer, unique=True, index=True)
     username = Column(String(50))
     step = Column(String(60), default="home_page")
+    role = Column(Enum(UserRoleEnum), default=UserRoleEnum.member)
 
 
 class GmailAccount(Base, BaseAttributes):
