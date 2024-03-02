@@ -1,5 +1,13 @@
+import json
+
+from typing import Union, Optional, List
+
 from pydantic import BaseModel, Field
-from typing import Optional
+
+from datetime import datetime
+
+from app.telegram.types import ParseMode, MessageEntityType
+
 
 
 class Base(BaseModel):
@@ -31,3 +39,35 @@ class CallbackSerializer(Base):
 class UpdateSerializer(Base):
     message: Optional[MessageSerializer] = ""
     callback_query: Optional[CallbackSerializer] = ""
+
+
+class KeyboardButtonSerializer(BaseModel):
+    text: str
+    request_contact: Optional[bool] = False
+    request_location: Optional[bool] = False
+
+
+class ReplyMarkupSerializer(BaseModel):
+    keyboard: List[List[KeyboardButtonSerializer]]
+    is_persistent: Optional[bool] = False
+    resize_keyboard	: Optional[bool] = False
+    one_time_keyboard: Optional[bool] = False
+
+
+class SendMessageSerializer(BaseModel):
+    chat_id: Union[int, str]
+    text: str
+    parse_mode: Optional[ParseMode] = ParseMode.HTML.value
+    entities: Optional[List[MessageEntityType]] = None
+    disable_web_page_preview: bool = True
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    schedule_date: Optional[datetime] = None
+    protect_content: Optional[bool] = None
+    reply_markup:Optional[ReplyMarkupSerializer] = None
+
+    def dict(self, **kwargs):
+        data = super().dict(**kwargs)
+        if reply_markup := data.get("reply_markup"):
+            data["reply_markup"] = json.dumps(reply_markup)
+        return data
