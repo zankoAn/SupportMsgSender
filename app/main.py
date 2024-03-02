@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.telegram.schemas import UpdateSerializer
+from app.telegram.handlers import BaseHandler
 
 
 app = FastAPI(debug=True)
@@ -7,14 +8,12 @@ app = FastAPI(debug=True)
 
 @app.post("/bot/webhook/")
 async def webhook(update: UpdateSerializer):
-    if not update:
-        return {"message": "PONG"}
+    try:
+        if update.message:
+            return BaseHandler(update).run()
 
-    elif update.message:
-        ...
-    elif update.callback_query:
-        ...
-    else:
-        print(update)
-
+        if update.callback_query:
+            ...
+    except Exception as error:
+        print(error)
     return {"message": "PONG"}
