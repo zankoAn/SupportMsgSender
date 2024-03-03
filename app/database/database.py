@@ -25,4 +25,3 @@ class SessionManager:
             pass
         finally:
             self.db.close()
-            SessionLocal.remove()
