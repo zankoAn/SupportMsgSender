@@ -3,7 +3,7 @@ from app.telegram.schemas import (
     UpdateSerializer, ReplyMarkupSerializer, KeyboardButtonSerializer,
     SendMessageSerializer
 )
-from app.database.crud import MessageManager
+from app.database.crud import MessageManager, UserManager
 
 
 
@@ -25,6 +25,10 @@ class BaseHandler:
             one_time_keyboard=True
         )
 
+    def add_new_user(self):
+        msg = self.update.message
+        self.user = UserManager().create(chat_id=msg.chat.id, username=msg.chat.username)
+
     def handler(self):
         text_msg = MessageManager().get_related_key_msg(self.update.message.text)
         if text_msg:
@@ -34,6 +38,7 @@ class BaseHandler:
             ...
 
     def run(self):
+        self.add_new_user()
         self.handler()
 
 
