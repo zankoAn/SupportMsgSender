@@ -12,7 +12,6 @@ class UserManager:
             try:
                 db.add(user)
                 db.commit()
-                db.refresh()
             except IntegrityError:
                 db.rollback()
         return user
@@ -28,3 +27,4 @@ class MessageManager:
         with SessionManager() as db:
             msg = db.query(Message).filter_by(key=update_key).first()
         return msg
+
