@@ -2,14 +2,13 @@ import json
 import os
 from pathlib import Path
 
-from app.database.database import Session
+from app.database.database import SessionManager
 from app.database.models import Message
 
 
 class LoadMsg:
     def __init__(self) -> None:
         self.path = self.get_file_path()
-        self.session = Session()
 
     def get_file_path(self):
         base_dir = Path(__file__).resolve().parent.parent.parent
@@ -31,12 +30,13 @@ class LoadMsg:
         )
 
     def load_msg(self, messages):
-        self.session.query(Message).delete()
-        self.session.commit()
-        for data in messages:
-            msg = self.create_msg(data)
-            self.session.add(msg)
-            self.session.commit()
+        with SessionManager() as db:
+            db.query(Message).delete()
+            db.commit()
+            for data in messages:
+                msg = self.create_msg(data)
+                db.add(msg)
+                db.commit()
 
     def run(self):
         if not self.is_valid_path():
@@ -44,4 +44,3 @@ class LoadMsg:
 
         msgs = self.read_file()
         self.load_msg(msgs)
-        self.session.close()
