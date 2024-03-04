@@ -27,6 +27,14 @@ class UserManager:
             print(err)
             return None
 
+    def update(self, user_id: int, **update_data):
+        with SessionManager() as db:
+            try:
+                db.query(User).filter(User.chat_id==user_id).update(update_data)
+                db.commit()
+            except IntegrityError:
+                db.rollback()
+
 
 class MessageManager:
     def get_related_step_msg(self, step: str) -> Message | List[None]:
