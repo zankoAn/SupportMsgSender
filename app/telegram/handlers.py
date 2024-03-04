@@ -54,31 +54,20 @@ class UserTextHandler(BaseHandler):
         for key, value in vars(base).items():
             setattr(self, key, value)
 
+    def home_page(self, msg):
+        msg = MessageManager().get_related_msg(current_step=msg.current_step)
+        return msg
+
     def show_status(self):
         ...
 
-    def ask_ticket_msg_file(self):
-        ...
-
-    def ask_ticket_msg_data(self):
-        ...
-
-    def ask_account_file(self):
-        ...
-
-    def ask_account_data(self):
-        ...
-
-    def send_ticket_msg(self):
-        ...
-
     def handler(self, msg):
+        chat_id = self.update.message.chat.id
+        if update_text_method := getattr(self, msg.current_step, None):
+            msg = update_text_method(msg)
+
         key = self.generate_keyboards(msg)
-        serialized_data = SendMessageSerializer(
-            chat_id=self.update.message.chat.id,
-            text=msg.text,
-            reply_markup=key
-        )
+        serialized_data = SendMessageSerializer(chat_id=chat_id, text=msg.text, reply_markup=key)
         self.bot.send_message(serialized_data)
 
     def run(self, text_msg):
