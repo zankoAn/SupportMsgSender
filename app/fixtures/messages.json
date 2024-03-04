@@ -1,32 +1,44 @@
 [
   {
     "key": "/start",
-    "text": "Hi, please choose one of the following options \ud83d\udc47\ud83c\udffb",
-    "keys": "\ud83d\ude80 Send tg Msg\n\ud83d\udcca Status\n\ud83d\uddc2 Add Msgs\n\ud83d\udce8 Add Gmails",
-    "keys_per_row": 2
+    "text": "Hi, please choose one of the following options 👇🏻",
+    "keys": "🚀 Send tg Msg\n📊 Status\n📨 Add Gmail\n🗂 Add Msgs",
+    "keys_per_row": 2,
+    "current_step": "home_page"
   },
   {
-    "key": "Send tg Msg \ud83d\ude80",
+    "key": "🚀 Send tg Msg",
     "text": "To start the send msg process, please provide the number of messages you want to send.",
-    "keys": "\ud83c\udfdb Back",
-    "keys_per_row": 2
+    "keys": "🏛 Back",
+    "keys_per_row": 2,
+    "current_step": "send_tg_msg"
   },
   {
-    "key": "\ud83d\udcca Status",
+    "key": "📊 Status",
     "text": "Total Send: {total_count}\nTotal Gmail: {gmail_count}\n.",
     "keys": "",
-    "keys_per_row": 1
+    "keys_per_row": 1,
+    "current_step": "status_page"
   },
   {
-    "key": "\ud83d\uddc2 Add Msg",
+    "key": "🗂 Add Msgs",
     "text": "Send your message directly OR use previous messages OR send a message file.",
-    "keys": "\u267b\ufe0f Previous msg\n\ud83c\udfdb Back",
-    "keys_per_row": 1
+    "keys": "♻️ Previous msg\n🏛 Back",
+    "keys_per_row": 1,
+    "current_step": "add_msg_page"
   },
   {
-    "key": "\ud83d\udce8 Add Gmail",
+    "key": "📨 Add Gmail",
     "text": "Please Send your gmail file OR gmail directly\nfor example: user@gmail.com:app_passwprd:phone_number",
-    "keys": "\ud83c\udfdb Back",
-    "keys_per_row": 1
+    "keys": "🏛 Back",
+    "keys_per_row": 1,
+    "current_step": "add_gmail_page"
+  },
+  {
+    "key": "🏛 Back",
+    "text": "",
+    "keys": "",
+    "keys_per_row": 2,
+    "current_step": "home_page"
   }
 ]
