@@ -1,20 +1,31 @@
-from .database import SessionManager
-from .models import User, Message
-
 from sqlalchemy.exc import IntegrityError
-from typing import List
+
+from app.database.database import SessionManager
+from app.database.models import User, Message, GmailAccount
+from app.telegram.types import UserType
 
 
 class UserManager:
-    def create(self, chat_id: int, username: str, step: str="home_page"):
-        user = User(chat_id=chat_id, username=username, step=step)
-        with SessionManager() as db:
-            try:
-                db.add(user)
-                db.commit()
-            except IntegrityError:
-                db.rollback()
+    def get_or_create(self, **user_params: UserType):
+        user = self.get_user(chat_id=user_params["chat_id"])
+        if not user:
+            user = User(**user_params)
+            with SessionManager() as db:
+                try:
+                    db.add(user)
+                    db.commit()
+                except IntegrityError:
+                    db.rollback()
         return user
+
+    def get_user(self, **criterion):
+        try:
+            with SessionManager() as db:
+                user = db.query(User).filter_by(**criterion).first()
+            return user
+        except Exception as err:
+            print(err)
+            return None
 
 
 class MessageManager:
