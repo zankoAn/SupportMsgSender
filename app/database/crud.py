@@ -37,10 +37,13 @@ class UserManager:
 
 
 class MessageManager:
-    def get_related_step_msg(self, step: str) -> Message | List[None]:
-        with SessionManager() as db:
-            msg = db.query(Message).filter_by(current_step=step).first()
-        return msg
+    def get_related_msg(self, **criterion) -> Message:
+        try:
+            with SessionManager() as db:
+                msg = db.query(Message).filter_by(**criterion).first()
+            return msg
+        except Exception as err:
+            print(err)
 
     def get_related_key_msg(self, update_key: str) -> Message | List[None]:
         with SessionManager() as db:
