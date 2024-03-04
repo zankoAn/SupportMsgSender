@@ -45,8 +45,12 @@ class MessageManager:
         except Exception as err:
             print(err)
 
-    def get_related_key_msg(self, update_key: str) -> Message | List[None]:
+class GmailAccountManager:
+    def create(self,  account_data_list):
+        accounts = [GmailAccount(**data) for data in account_data_list]
         with SessionManager() as db:
-            msg = db.query(Message).filter_by(key=update_key).first()
-        return msg
-
+            try:
+                db.add_all(accounts)
+                db.commit()
+            except IntegrityError:
+                db.rollback()
