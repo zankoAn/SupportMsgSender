@@ -21,6 +21,8 @@ class User(Base, BaseAttributes):
 
     chat_id = Column(Integer, unique=True, index=True)
     username = Column(String(50))
+    first_name = Column(String(100))
+    last_name = Column(String(100))
     step = Column(String(60), default="home_page")
     role = Column(Enum(UserRoleEnum), default=UserRoleEnum.member)
 
@@ -30,8 +32,7 @@ class GmailAccount(Base, BaseAttributes):
 
     user_id = Column(Integer, ForeignKey("user.id"))
     email = Column(String(120), unique=True, index=True)
-    phone_number = Column(String(16))
-    password_hash = Column(String(128))
+    phone = Column(String(16))
 
 
 class Message(Base, BaseAttributes):
