@@ -27,11 +27,17 @@ class BaseHandler:
 
     def add_new_user(self):
         msg = self.update.message
-        self.user = UserManager().create(chat_id=msg.chat.id, username=msg.chat.username)
+        self.user = UserManager().get_or_create(
+            chat_id=msg.chat.id,
+            username=msg.chat.username,
+            first_name=msg.chat.first_name,
+            last_name=msg.chat.last_name,
+        )
 
     def handler(self):
-        text_msg = MessageManager().get_related_key_msg(self.update.message.text)
+        text_msg = MessageManager().get_related_msg(key=self.update.message.text)
         if text_msg:
+            UserManager().update(self.user.chat_id, step=text_msg.current_step)
             return UserTextHandler(self).run(text_msg)
         else:
             #TODO StepHandler
