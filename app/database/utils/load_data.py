@@ -26,7 +26,8 @@ class LoadMsg:
             text=data["text"],
             key=data["key"],
             keys=data["keys"],
-            keys_per_row=data["keys_per_row"]
+            keys_per_row=data["keys_per_row"],
+            current_step=data["current_step"]
         )
 
     def load_msg(self, messages):

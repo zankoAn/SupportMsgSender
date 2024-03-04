@@ -21,7 +21,8 @@ class DumpMsg:
                 "text": msg.text,
                 "key": msg.key,
                 "keys": msg.keys,
-                "keys_per_row": msg.keys_per_row
+                "keys_per_row": msg.keys_per_row,
+                "current_step": msg.current_step
             } for msg in messages
         ]
 
