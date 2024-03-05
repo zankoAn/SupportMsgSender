@@ -6,8 +6,8 @@ from app.telegram.types import UserType
 
 
 class UserManager:
-    def get_or_create(self, **user_params: UserType):
-        user = self.get_user(chat_id=user_params["chat_id"])
+    def get_or_create(self, **user_params):
+        user = self.get_user(chat_id=user_params.get("chat_id"))
         if not user:
             user = User(**user_params)
             with SessionManager() as db:
@@ -44,6 +44,7 @@ class MessageManager:
             return msg
         except Exception as err:
             print(err)
+
 
 class GmailAccountManager:
     def create(self,  account_data_list):
