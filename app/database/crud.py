@@ -55,3 +55,11 @@ class GmailAccountManager:
                 db.commit()
             except IntegrityError:
                 db.rollback()
+
+    def get_emails(self, limit):
+        with SessionManager() as db:
+            try:
+                gmails = db.query(GmailAccount).limit(limit).all()
+                return gmails
+            except IntegrityError:
+                db.rollback()
