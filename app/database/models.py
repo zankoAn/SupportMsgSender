@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Integer, String, ForeignKey, INTEGER, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, INTEGER, DateTime, Enum
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -14,6 +14,13 @@ class BaseAttributes:
 class UserRoleEnum(enum.Enum):
     admin = "admin"
     member = "member"
+
+
+class OrderStatusEnum(enum.Enum):
+    PENDING = "pending"
+    PROCESSING = "processing"
+    CANCELED = "canceled"
+    COMPLETED = "completed"
 
 
 class User(Base, BaseAttributes):
@@ -43,3 +50,13 @@ class Message(Base, BaseAttributes):
     keys = Column(String)
     keys_per_row = Column(INTEGER, default=2)
     current_step = Column(String(60), default="home_page")
+
+
+class Order(Base, BaseAttributes):
+    __tablename__ = "order"
+
+    user_id = Column(Integer, ForeignKey("user.id"))
+    count = Column(Integer)
+    sleep_range = Column(String(15), default="1-3")
+    status = Column(Enum(OrderStatusEnum), default=OrderStatusEnum.PENDING)
+    created = Column(DateTime)
