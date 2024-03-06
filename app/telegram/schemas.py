@@ -22,12 +22,21 @@ class ChatSerializer(Base):
     username: Optional[str] = ""
 
 
+class DocumentSerializer(Base):
+    file_name: str
+    mime_type: str
+    file_id: str
+    file_unique_id: str
+    file_size: int
+
+
 class MessageSerializer(Base):
     message_id: int
     chat: ChatSerializer
     text: Optional[str] = ""
     reply_to_message: Optional[dict] = ""
     from_user: ChatSerializer = Field(..., alias="from")
+    document: Optional[DocumentSerializer] = None
 
 
 class CallbackSerializer(Base):
