@@ -80,3 +80,19 @@ class SendMessageSerializer(BaseModel):
         if reply_markup := data.get("reply_markup"):
             data["reply_markup"] = json.dumps(reply_markup)
         return data
+
+
+class EditMessageTextSerializer(BaseModel):
+    chat_id: Union[int, str]
+    message_id: Optional[int]
+    text: str
+    inline_message_id: Optional[str] = None
+    parse_mode: Optional[ParseMode] = ParseMode.HTML.value
+    entities: Optional[List[MessageEntityType]] = None
+    reply_markup:Optional[ReplyMarkupSerializer] = None
+
+    def dict(self, **kwargs):
+        data = super().dict(**kwargs)
+        if reply_markup := data.get("reply_markup"):
+            data["reply_markup"] = json.dumps(reply_markup)
+        return data

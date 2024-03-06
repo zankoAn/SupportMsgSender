@@ -2,7 +2,7 @@ import json
 import requests
 
 from app.utils.load_env import config
-from app.telegram.schemas import SendMessageSerializer
+from app.telegram.schemas import SendMessageSerializer, EditMessageTextSerializer
 
 
 class Telegram:
@@ -47,6 +47,11 @@ class Telegram:
     def send_message(self, data: SendMessageSerializer):
         data = data.dict()
         result = self.bot(telegram_method="sendMessage", data=data)
+        return result
+
+    def edit_message_text(self, data: EditMessageTextSerializer):
+        data = data.dict()
+        result = self.bot(telegram_method="editMessageText", data=data)
         return result
 
     def get_file(self, file_id: int):
