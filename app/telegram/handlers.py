@@ -194,6 +194,7 @@ class UserStepHandler(BaseHandler):
         except ValueError as error:
             return self.handle_exception(error)
 
+        TicketProcessingHandler(self).run()
 
     def handler(self) -> None:
         if callback := self.steps.get(self.user.step):
