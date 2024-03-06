@@ -106,6 +106,7 @@ class UserStepHandler(BaseHandler):
             "add_msg_page": self.get_ticket_msg,
             "add_proxy_page": self.get_proxies,
             "send_tg_msg": self.get_order_send_count,
+            "get_order_sleep_time": self.get_order_sleep_time,
         }
         for key, value in vars(base).items():
             setattr(self, key, value)
@@ -183,6 +184,16 @@ class UserStepHandler(BaseHandler):
         msg = MessageManager().get_related_msg(current_step="get_order_sleep_time")
         text_msg = SendMessageSerializer(chat_id=chat_id, text=msg.text)
         self.bot.send_message(text_msg)
+
+    def get_order_sleep_time(self) -> None:
+        try:
+            text = self.update.message.text
+            start, end = map(int, text.split("-"))
+            if start > end:
+                raise ValueError("Start time range must be smaller then end time range")
+        except ValueError as error:
+            return self.handle_exception(error)
+
 
     def handler(self) -> None:
         if callback := self.steps.get(self.user.step):
