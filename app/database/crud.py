@@ -1,8 +1,8 @@
 from sqlalchemy.exc import IntegrityError
 
 from app.database.database import SessionManager
-from app.database.models import User, Message, GmailAccount
-from app.telegram.types import UserType
+from app.database.models import User, Message, GmailAccount, Order
+from sqlalchemy import desc, update
 
 
 class UserManager:
@@ -61,5 +61,37 @@ class GmailAccountManager:
             try:
                 gmails = db.query(GmailAccount).limit(limit).all()
                 return gmails
+            except IntegrityError:
+                db.rollback()
+
+
+class OrderManager:
+    def create(self, user_id, count):
+        order = Order(user_id=user_id, count=count)
+        with SessionManager() as db:
+            try:
+                db.add(order)
+                db.commit()
+            except IntegrityError:
+                db.rollback()
+
+    def update(self, user_id, **update_data):
+        with SessionManager() as db:
+            try:
+                update_statement = (
+                    update(Order)
+                    .where(Order.id==db.query(Order.id).filter(user_id==user_id).order_by(desc(Order.id)).limit(1).scalar())
+                    .values(update_data)
+                )
+                db.execute(update_statement)
+                db.commit()
+            except IntegrityError:
+                db.rollback()
+
+    def get_last_order(self, user_id):
+        with SessionManager() as db:
+            try:
+                order = db.query(Order).filter(user_id==user_id).order_by(desc(Order.id)).limit(1).scalar()
+                return order
             except IntegrityError:
                 db.rollback()
