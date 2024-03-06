@@ -1,13 +1,30 @@
+import random
+import asyncio
+
+from pathlib import Path
+from typing import Tuple, List, Dict
+
+from app.database.crud import (
+    GmailAccountManager,
+    MessageManager,
+    OrderManager,
+    UserManager
+)
 from app.telegram.bot import Telegram
 from app.telegram.schemas import (
-    UpdateSerializer, ReplyMarkupSerializer, KeyboardButtonSerializer,
-    SendMessageSerializer
+    KeyboardButtonSerializer,
+    ReplyMarkupSerializer,
+    SendMessageSerializer,
+    EditMessageTextSerializer,
+    UpdateSerializer
 )
-from app.database.crud import MessageManager, UserManager
+from app.utils.support_ticket import SendSupportTicket
+from app.database.models import OrderStatusEnum
 
 
 
 class BaseHandler:
+
     def __init__(self, update: UpdateSerializer) -> None:
         self.update = update
         self.user = None
