@@ -6,7 +6,8 @@ from app.telegram.schemas import SendMessageSerializer
 
 
 class Telegram:
-    WEBHOOK_URL= "https://api.telegram.org/bot{}/{}"
+    WEBHOOK_URL = "https://api.telegram.org/bot{}/{}"
+    FILE_URL = "https://api.telegram.org/file/bot{}/{}"
     HEADERS = {"Cache-Control": "no-cache"}
     PROXY = []
 
@@ -47,3 +48,16 @@ class Telegram:
         data = data.dict()
         result = self.bot(telegram_method="sendMessage", data=data)
         return result
+
+    def get_file(self, file_id: int):
+        data = dict(file_id=file_id)
+        response = self.bot(telegram_method="GetFile", data=data)
+        if response.get("ok"):
+            try:
+                file_path = response["result"]["file_path"]
+                url = self.FILE_URL.format(config.TOKEN, file_path)
+                file = requests.get(url, proxies=self.PROXY, headers=self.HEADERS)
+                return file
+            except Exception as error:
+                print("GetFile Error: ", error)
+        return {}
