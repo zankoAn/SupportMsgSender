@@ -104,6 +104,7 @@ class UserStepHandler(BaseHandler):
         self.steps = {
             "add_gmail_page": self.get_email_and_phone,
             "add_msg_page": self.get_ticket_msg,
+            "add_proxy_page": self.get_proxies,
         }
         for key, value in vars(base).items():
             setattr(self, key, value)
@@ -152,6 +153,19 @@ class UserStepHandler(BaseHandler):
         base_path = Path(__file__).resolve().parent.parent
         file_path = base_path / "tmp/ticket_msg.txt"
         self.save_file_contents(file_path)
+        self.send_success_message("add_data_success")
+
+    def get_proxies(self) -> None:
+        if not self.update.message.document:
+            try:
+                host, port, ip, passwd = self.update.message.text.split(":")
+            except ValueError as error:
+                print(error)
+                return self.handle_exception(error)
+
+        base_path = Path(__file__).resolve().parent.parent
+        file_path = base_path / "tmp/proxies.txt"
+        self.store_file_contents(file_path)
         self.send_success_message("add_data_success")
 
     def handler(self) -> None:
