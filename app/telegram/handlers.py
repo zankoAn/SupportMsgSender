@@ -68,8 +68,7 @@ class BaseHandler:
             UserManager().update(self.user.chat_id, step=text_msg.current_step)
             return UserTextHandler(self).run(text_msg)
         else:
-            #TODO StepHandler
-            ...
+            return UserStepHandler(self).run()
 
     def run(self):
         self.add_new_user()
@@ -86,9 +85,6 @@ class UserTextHandler(BaseHandler):
         msg = MessageManager().get_related_msg(current_step=msg.current_step)
         return msg
 
-    def show_status(self):
-        ...
-
     def handler(self, msg):
         chat_id = self.update.message.chat.id
         if update_text_method := getattr(self, msg.current_step, None):
@@ -102,19 +98,49 @@ class UserTextHandler(BaseHandler):
         self.handler(text_msg)
 
 
-class UserStepHandler:
+class UserStepHandler(BaseHandler):
 
-    def get_account_email(self):
-        ...
+    def __init__(self, base) -> None:
+        self.steps = {
+            "add_gmail_page": self.get_email_and_phone,
+        }
+        for key, value in vars(base).items():
+            setattr(self, key, value)
 
-    def get_account_password(self):
-        ...
+    def process_user_email_phone_data(self) -> List[Dict]:
+        accounts = []
+        if self.update.message.document:
+            file_id = self.update.message.document.file_id
+            file = self.bot.get_file(file_id)
+            user_data = file.iter_lines(decode_unicode=True)
+        else:
+            user_data = self.update.message.text.strip().split("\n")
 
-    def get_account_phone(self):
-        ...
+        for line in user_data:
+            try:
+                email, phone = line.strip().split(":")
+                data = {"user_id": self.user.id, "email": email, "phone": phone}
+                accounts.append(data)
+            except ValueError as error:
+                self.handle_exception(error)
+        return accounts
 
-    def get_ticket_msg(self):
-        ...
+    def send_success_message(self, current_step) -> None:
+        msg = MessageManager().get_related_msg(current_step=current_step)
+        serialized_data = SendMessageSerializer(chat_id=self.user.chat_id, text=msg.text)
+        self.bot.send_message(serialized_data)
 
-    def get_send_count(self):
-        ...
+    def get_email_and_phone(self) -> None:
+        accounts = self.process_user_email_phone_data()
+        if accounts:
+            GmailAccountManager().create(accounts)
+            self.send_success_message("add_data_success")
+
+    def handler(self) -> None:
+        if callback := self.steps.get(self.user.step):
+            callback()
+
+    def run(self) -> None:
+        self.handler()
+
+
