@@ -105,6 +105,7 @@ class UserStepHandler(BaseHandler):
             "add_gmail_page": self.get_email_and_phone,
             "add_msg_page": self.get_ticket_msg,
             "add_proxy_page": self.get_proxies,
+            "send_tg_msg": self.get_order_send_count,
         }
         for key, value in vars(base).items():
             setattr(self, key, value)
@@ -167,6 +168,21 @@ class UserStepHandler(BaseHandler):
         file_path = base_path / "tmp/proxies.txt"
         self.store_file_contents(file_path)
         self.send_success_message("add_data_success")
+
+    def get_order_send_count(self) -> None:
+        try:
+            text = self.update.message.text
+            order_count = int(text)
+        except ValueError as error:
+            self.handle_exception(error)
+            return
+
+        chat_id = self.user.chat_id
+        OrderManager().create(chat_id, order_count)
+        UserManager().update(chat_id, step="get_order_sleep_time")
+        msg = MessageManager().get_related_msg(current_step="get_order_sleep_time")
+        text_msg = SendMessageSerializer(chat_id=chat_id, text=msg.text)
+        self.bot.send_message(text_msg)
 
     def handler(self) -> None:
         if callback := self.steps.get(self.user.step):
