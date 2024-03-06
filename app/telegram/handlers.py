@@ -103,6 +103,7 @@ class UserStepHandler(BaseHandler):
     def __init__(self, base) -> None:
         self.steps = {
             "add_gmail_page": self.get_email_and_phone,
+            "add_msg_page": self.get_ticket_msg,
         }
         for key, value in vars(base).items():
             setattr(self, key, value)
@@ -125,6 +126,17 @@ class UserStepHandler(BaseHandler):
                 self.handle_exception(error)
         return accounts
 
+    def save_file_contents(self, output_file_path) -> None:
+        if self.update.message.document:
+            file_id = self.update.message.document.file_id
+            file = self.bot.get_file(file_id)
+            msgs = [line.decode() for line in file.iter_lines(decode_unicode=True)]
+        else:
+            msgs = self.update.message.text.strip().split("\n")
+
+        with open(output_file_path, "w") as msg_file:
+            msg_file.write("\n".join(msgs))
+
     def send_success_message(self, current_step) -> None:
         msg = MessageManager().get_related_msg(current_step=current_step)
         serialized_data = SendMessageSerializer(chat_id=self.user.chat_id, text=msg.text)
@@ -135,6 +147,12 @@ class UserStepHandler(BaseHandler):
         if accounts:
             GmailAccountManager().create(accounts)
             self.send_success_message("add_data_success")
+
+    def get_ticket_msg(self) -> None:
+        base_path = Path(__file__).resolve().parent.parent
+        file_path = base_path / "tmp/ticket_msg.txt"
+        self.save_file_contents(file_path)
+        self.send_success_message("add_data_success")
 
     def handler(self) -> None:
         if callback := self.steps.get(self.user.step):
