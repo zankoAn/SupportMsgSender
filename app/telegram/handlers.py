@@ -203,3 +203,77 @@ class UserStepHandler(BaseHandler):
         self.handler()
 
 
+class TicketProcessingHandler(BaseHandler):
+    START_STEP_MSG = "start_send_ticket_msg"
+    COMPLETION_STEP_MSG = "completion_send_ticket_msg"
+
+    def __init__(self, base) -> None:
+        for key, value in vars(base).items():
+            setattr(self, key, value)
+        self.chat_id = self.update.message.chat.id
+
+    def update_order_and_user_step(self) -> None:
+        text = self.update.message.text
+        OrderManager().update(self.chat_id, sleep_range=text, status=OrderStatusEnum.PROCESSING)
+        UserManager().update(self.chat_id, step="home_page")
+
+    def get_order_and_emails(self) -> Tuple[OrderManager, GmailAccountManager]:
+        last_order = OrderManager().get_last_order(self.chat_id)
+        email_phones = GmailAccountManager().get_emails(limit=last_order.count)
+        return last_order, email_phones
+
+    def send_update_order_status_msg(self, counter=0, email_count=0, sleep_time=0, edit_msg_id=0) -> int:
+        msg = MessageManager().get_related_msg(current_step=self.START_STEP_MSG)
+        text_msg=msg.text.format(
+            counter=counter,
+            sleep_time=sleep_time,
+            email_count=email_count
+        )
+        if edit_msg_id:
+            serialized_data = EditMessageTextSerializer(
+                chat_id=self.chat_id,
+                message_id=edit_msg_id,
+                text=text_msg
+            )
+            self.bot.edit_message_text(serialized_data)
+        else:
+            text_msg = SendMessageSerializer(
+                chat_id=self.chat_id,
+                text=text_msg
+            )
+            resp = self.bot.send_message(text_msg)
+            return resp["result"]["message_id"]
+
+    def send_completion_message(self, success_counter) -> None:
+        msg = MessageManager().get_related_msg(current_step=self.COMPLETION_STEP_MSG)
+        text_msg = SendMessageSerializer(
+            chat_id=self.chat_id,
+            text=msg.text.format(send_count=success_counter)
+        )
+        self.bot.send_message(text_msg)
+
+    async def process_tickets(self, email_phones, last_order) -> None:
+        start, end = last_order.sleep_range.split("-")
+        success_counter = 0
+        ticket = SendSupportTicket()
+        msg_id = self.send_update_order_status_msg()
+        try:
+            for obj in email_phones:
+                response= await ticket.run(email=obj.email, phone=obj.phone)
+                if response and "Thanks for your report!" in response:
+                    success_counter += 1
+
+                sleep_time = random.randrange(int(start), int(end))
+                self.send_update_order_status_msg(success_counter, len(email_phones), sleep_time, msg_id)
+                await asyncio.sleep(sleep_time)
+
+            OrderManager().update(self.chat_id, status=OrderStatusEnum.COMPLETED)
+            self.send_completion_message(success_counter)
+        except Exception as error:
+            self.handle_exception(error)
+
+    def run(self) -> None:
+        self.update_order_and_user_step()
+        order, emails = self.get_order_and_emails()
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.process_tickets(emails, order))
