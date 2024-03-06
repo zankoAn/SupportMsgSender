@@ -34,6 +34,17 @@ class BaseHandler:
             last_name=msg.chat.last_name,
         )
 
+    def handle_exception(self, error):
+        tb = error.__traceback__
+        file_name = tb.tb_frame.f_code.co_filename
+        line_number = tb.tb_lineno
+        msg = MessageManager().get_related_msg(current_step="error_msg")
+        msg = SendMessageSerializer(
+            chat_id=self.user.chat_id,
+            text=msg.text.format(error=error, file_name=file_name, line_number=line_number)
+        )
+        self.bot.send_message(msg)
+
     def handler(self):
         text_msg = MessageManager().get_related_msg(key=self.update.message.text)
         if text_msg:
