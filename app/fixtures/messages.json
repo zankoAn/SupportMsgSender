@@ -2,7 +2,7 @@
   {
     "key": "/start",
     "text": "Hi, please choose one of the following options 👇🏻",
-    "keys": "🚀 Send tg Msg\n📊 Status\n📨 Add Gmail\n🗂 Add Msgs",
+    "keys": "🚀 Send tg Msg\n📨 Add Gmail\n📩 Add Msg\n🕸️ Add Proxy",
     "keys_per_row": 2,
     "current_step": "home_page"
   },
@@ -14,31 +14,66 @@
     "current_step": "send_tg_msg"
   },
   {
-    "key": "📊 Status",
-    "text": "Total Send: {total_count}\nTotal Gmail: {gmail_count}\n.",
-    "keys": "",
-    "keys_per_row": 1,
-    "current_step": "status_page"
+    "key": "",
+    "text": "Send the tiem range to start the send support msg",
+    "keys": "🏛 Back",
+    "keys_per_row": 2,
+    "current_step": "get_order_sleep_time"
   },
   {
-    "key": "🗂 Add Msgs",
-    "text": "Send your message directly OR use previous messages OR send a message file.",
-    "keys": "♻️ Previous msg\n🏛 Back",
-    "keys_per_row": 1,
+    "key": "",
+    "text": "🚀 <b>Send Message Process Started!\n\nSending messages...</b> ⏳\n\n🔘 <b>Counter:</b> [ {counter} ]\n<b>🔘 Emails:</b> [ {email_count} ]\n⏳ <b>Sleep Time:</b> {sleep_time}s \n➖➖➖➖➖➖➖➖➖➖➖",
+    "keys": "🏛 Back",
+    "keys_per_row": 2,
+    "current_step": "start_send_ticket_msg"
+  },
+  {
+    "key": "",
+    "text": "✅ <b>Send Message Process Completed Successfully!\n\n➕ Total Sent:<b> [ {send_count} ]",
+    "keys": "🚀 Send tg Msg\n📨 Add Gmail\n📩 Add Msg\n🕸️ Add Proxy",
+    "keys_per_row": 2,
+    "current_step": "completion_send_ticket_msg"
+  },
+  {
+    "key": "🕸️ Add Proxy",
+    "text": "🌐 <b>Send your proxies.</b>\n\nPlease use this format for both options: <code>'hostname:port:user:pass'</code>\n\n1️⃣ <b>Direct input:</b> Send each proxy on separate lines.\n\n2️⃣ <b>File upload:</b> Upload a file containing your proxies here.",
+    "keys": "🏛 Back",
+    "keys_per_row": 2,
+    "current_step": "add_proxy_page"
+  },
+  {
+    "key": "📩 Add Msg",
+    "text": "📩 <b>Ssend your msgs with one of the following options:</b>.\n\n\n1️⃣ <b>Direct input:</b> Type and send your message directly (one message per line).\n\n2️⃣ <b>Message file:</b> Send a file containing your message.",
+    "keys": "🏛 Back",
+    "keys_per_row": 2,
     "current_step": "add_msg_page"
   },
   {
     "key": "📨 Add Gmail",
-    "text": "Please Send your gmail file OR gmail directly\nfor example: user@gmail.com:app_passwprd:phone_number",
+    "text": "📧 <b>Send your Email addres:phone</b>.\n\n\n1️⃣ <b>Gmail file</b>: Upload a file containing your Gmails.\n\n2️⃣ <b>Gmail directly:</b> Type and send your Gmail information directly.\n\n<u>For example:</u> <code>user@gmail.com:phone_number</code>",
     "keys": "🏛 Back",
-    "keys_per_row": 1,
+    "keys_per_row": 2,
     "current_step": "add_gmail_page"
   },
   {
     "key": "🏛 Back",
     "text": "",
-    "keys": "",
+    "keys": "🚀 Send tg Msg\n📨 Add Gmail\n📩 Add Msg\n🕸️ Add Proxy",
     "keys_per_row": 2,
     "current_step": "home_page"
+  },
+  {
+    "key": "",
+    "text": "👌 Your data has been successfully received! ✅",
+    "keys": "🚀 Send tg Msg\n📨 Add Gmail\n📩 Add Msg\n🕸️ Add Proxy",
+    "keys_per_row": 2,
+    "current_step": "add_data_success"
+  },
+  {
+    "key": "",
+    "text": "[ ❌ ] <b>Exception [ ❌ ]\n\n__{error}__\n\nPath: </b><code>{file_name}</code>, line {line_number}",
+    "keys": "",
+    "keys_per_row": 2,
+    "current_step": "error_msg"
   }
 ]
