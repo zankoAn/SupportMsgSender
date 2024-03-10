@@ -14,6 +14,7 @@ class UserManager:
                 try:
                     db.add(user)
                     db.commit()
+                    db.refresh(user)
                 except IntegrityError:
                     db.rollback()
         return user
