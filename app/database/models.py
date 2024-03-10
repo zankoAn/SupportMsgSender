@@ -27,9 +27,9 @@ class User(Base, BaseAttributes):
     __tablename__ = "user"
 
     chat_id = Column(Integer, unique=True, index=True)
-    username = Column(String(50))
-    first_name = Column(String(100))
-    last_name = Column(String(100))
+    username = Column(String(50), default="")
+    first_name = Column(String(100), default="")
+    last_name = Column(String(100), default="")
     step = Column(String(60), default="home_page")
     role = Column(Enum(UserRoleEnum), default=UserRoleEnum.member)
 
