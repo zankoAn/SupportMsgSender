@@ -19,7 +19,7 @@ from app.telegram.schemas import (
     UpdateSerializer
 )
 from app.utils.support_ticket import SendSupportTicket
-from app.database.models import OrderStatusEnum
+from app.database.models import UserRoleEnum, OrderStatusEnum
 
 
 
@@ -51,6 +51,10 @@ class BaseHandler:
             last_name=msg.chat.last_name,
         )
 
+    def is_superuser(self):
+        if self.user.role == UserRoleEnum.admin:
+            return True
+
     def handle_exception(self, error):
         tb = error.__traceback__
         file_name = tb.tb_frame.f_code.co_filename
@@ -72,8 +76,8 @@ class BaseHandler:
 
     def run(self):
         self.add_new_user()
+        if not self.is_superuser(): return
         self.handler()
-
 
 class UserTextHandler(BaseHandler):
 
