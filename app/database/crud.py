@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from app.database.database import SessionManager
+from app.database.database import SessionManager, meta
 from app.database.models import User, Message, GmailAccount, Order
 from sqlalchemy import desc, update
 
@@ -29,12 +29,15 @@ class UserManager:
             return None
 
     def update(self, user_id: int, **update_data):
+        updated_count = 0
         with SessionManager() as db:
             try:
-                db.query(User).filter(User.chat_id==user_id).update(update_data)
+                updated_count = db.query(User).filter(User.chat_id==user_id).update(update_data)
                 db.commit()
             except IntegrityError:
                 db.rollback()
+
+        return updated_count
 
 
 class MessageManager:
