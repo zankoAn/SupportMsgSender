@@ -5,6 +5,7 @@ The project focuses on a clean structure that integrates FastAPI for handling in
 
 <br>
 
+
 ## Prerequisites
 - Python 3.10 or newer (for manual installation).
 <br>
@@ -38,6 +39,7 @@ To enable the Telegram webhook, follow these additional steps:
 
 <br>
 
+
 ## Running Help
 To view available command-line options and help, run the following command:
 
@@ -50,3 +52,20 @@ python manage.py -h
  docker exec tm-app python manage.py -h
 ```
 <br>
+
+
+## Promoting a User to Admin
+To enable the bot to respond to users, it's necessary to promote a user to an admin role. You can promote a user to admin with:
+
+
+### Manual:
+```bash
+python manage.py promote user_id admin
+```
+
+### Docker:
+```bash
+ docker exec tm-app python manage.py promote user_id admin
+```
+
+
