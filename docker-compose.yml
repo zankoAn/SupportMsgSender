@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: tm-app
+    restart: on-failure
+    networks:
+      - tm-net
+    ports:
+      - 8000:8000
+    command: sh -c "python manage.py migrate &&
+                    python manage.py loadmsg &&
+                    python manage.py runserver"
+networks:
+  tm-net:
