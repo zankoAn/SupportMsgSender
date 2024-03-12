@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from app.database.database import SessionManager, meta
+from app.database.database import SessionManager
 from app.database.models import User, Message, GmailAccount, Order
 from sqlalchemy import desc, update
 
