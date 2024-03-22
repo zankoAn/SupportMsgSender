@@ -16,7 +16,7 @@ To set up the project, choose your preferred installation method:
 ### 1.Manual
 1. Clone the repository.
 2. Navigate to the project directory: `cd SupportMsgSender`
-3. Edit the environment variables in the `.env.ini` file (use `.env.example` as a template).
+3. Create the `.env.ini` file and add the environment variables(using `.env.example` as a template).
 4. Install dependencies: `pip install -r requirements.txt`.
 5. Migrate the migration files: `python manage.py migrate`.
 6. Load default fixtures: `python manage.py loadmsg`.
@@ -26,7 +26,7 @@ To set up the project, choose your preferred installation method:
 1. Install Docker.
 2. Clone the repository.
 3. Navigate to the project directory: `cd SupportMsgSender`
-4. Edit the environment variables in the `.env.ini` file (use `.env.example` as a template).
+4. Create the `.env.ini` file and add the environment variables(using `.env.example` as a template).
 5. Run the application using Docker: `docker compose up`.
 
 <br>
