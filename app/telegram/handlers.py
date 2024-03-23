@@ -88,7 +88,7 @@ class UserTextHandler(BaseHandler):
         for key, value in vars(base).items():
             setattr(self, key, value)
 
-    def home_page(self, msg):
+    async def home_page(self, msg):
         msg = MessageManager().get_related_msg(current_step=msg.current_step)
         return msg
 
