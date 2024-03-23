@@ -43,7 +43,7 @@ class SendSupportTicket:
         return random.choice(self.msgs)
 
     async def get_connector(self, proxy: str):
-        if not proxy:
+        if not any(proxy):
             return None
 
         host, port, user, password = proxy
