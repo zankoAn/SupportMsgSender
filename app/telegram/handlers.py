@@ -140,12 +140,12 @@ class UserStepHandler(BaseHandler):
         if self.update.message.document:
             file_id = self.update.message.document.file_id
             file = self.bot.get_file(file_id)
-            msgs = [line.decode() for line in file.iter_lines(decode_unicode=True)]
+            msgs = file.content()
         else:
-            msgs = self.update.message.text.strip().split("\n")
+            msgs = self.update.message.text.strip()
 
         with open(output_file_path, "w") as msg_file:
-            msg_file.write("\n".join(msgs))
+            msg_file.write(msgs)
 
     def send_success_message(self, current_step) -> None:
         msg = MessageManager().get_related_msg(current_step=current_step)
