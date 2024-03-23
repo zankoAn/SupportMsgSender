@@ -123,10 +123,11 @@ class UserStepHandler(BaseHandler):
         if self.update.message.document:
             file_id = self.update.message.document.file_id
             file = self.bot.get_file(file_id)
-            user_data = file.iter_lines(decode_unicode=True)
+            user_data = file.content.decode("utf-8")
         else:
-            user_data = self.update.message.text.strip().split("\n")
+            user_data = self.update.message.text
 
+        user_data = user_data.strip().split("\n")
         for line in user_data:
             try:
                 email, phone = line.strip().split(":")
@@ -140,7 +141,7 @@ class UserStepHandler(BaseHandler):
         if self.update.message.document:
             file_id = self.update.message.document.file_id
             file = self.bot.get_file(file_id)
-            msgs = file.content()
+            msgs = file.content.decode("utf-8")
         else:
             msgs = self.update.message.text.strip()
 
