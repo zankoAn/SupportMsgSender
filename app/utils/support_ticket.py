@@ -13,6 +13,7 @@ class SendSupportTicket:
     def __init__(self) -> None:
         self.proxies = None
         self.msgs = None
+        self.ticket_msg_delimiter = "\n\n\n"
         self.base_url = "https://telegram.org/support"
         self.base_data = {
             "message": None,
@@ -39,7 +40,7 @@ class SendSupportTicket:
         if not self.msgs:
             file_path = self.BASE_PATH / "tmp/ticket_msg.txt"
             with open(file_path) as m_file:
-                self.msgs = m_file.read().split("\n")
+                self.msgs = m_file.read().split(self.ticket_msg_delimiter)
         return random.choice(self.msgs)
 
     async def get_connector(self, proxy: str):
