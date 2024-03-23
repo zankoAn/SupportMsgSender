@@ -29,7 +29,7 @@
   },
   {
     "key": "",
-    "text": "✅ <b>Send Message Process Completed Successfully!\n\n➕ Total Sent:<b> [ {send_count} ]",
+    "text": "✅ <b>Send Message Process Completed Successfully!\n\n➕ Total Sent:</b> [ {send_count} ]",
     "keys": "🚀 Send tg Msg\n📨 Add Gmail\n📩 Add Msg\n🕸️ Add Proxy",
     "keys_per_row": 2,
     "current_step": "completion_send_ticket_msg"
