@@ -11,6 +11,8 @@ class SendSupportTicket:
     BASE_PATH = Path(__file__).resolve().parent.parent
 
     def __init__(self) -> None:
+        self.proxies = None
+        self.msgs = None
         self.base_url = "https://telegram.org/support"
         self.base_data = {
             "message": None,
@@ -27,18 +29,23 @@ class SendSupportTicket:
         }
 
     async def get_proxy(self):
-        file_path = self.BASE_PATH / "tmp/proxies.txt"
-        with open(file_path) as p_file:
-            proxies = p_file.read().split("\n")
-        return random.choice(proxies)
+        if not self.proxies:
+            file_path = self.BASE_PATH / "tmp/proxies.txt"
+            with open(file_path) as p_file:
+                self.proxies = p_file.read().split("\n")
+        return random.choice(self.proxies)
 
     async def get_messages(self):
-        file_path = self.BASE_PATH / "tmp/ticket_msg.txt"
-        with open(file_path) as m_file:
-            msgs = m_file.read().split("\n")
-        return random.choice(msgs)
+        if not self.msgs:
+            file_path = self.BASE_PATH / "tmp/ticket_msg.txt"
+            with open(file_path) as m_file:
+                self.msgs = m_file.read().split("\n")
+        return random.choice(self.msgs)
 
     async def get_connector(self, proxy: str):
+        if not proxy:
+            return None
+
         host, port, user, password = proxy
         connector = ProxyConnector(
             proxy_type=ProxyType.SOCKS5,
