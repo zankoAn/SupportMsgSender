@@ -171,7 +171,7 @@ class UserStepHandler(BaseHandler):
 
         base_path = Path(__file__).resolve().parent.parent
         file_path = base_path / "tmp/proxies.txt"
-        self.store_file_contents(file_path)
+        self.save_file_contents(file_path)
         self.send_success_message("add_data_success")
 
     def get_order_send_count(self) -> None:
