@@ -153,7 +153,7 @@ class UserStepHandler(BaseHandler):
         serialized_data = SendMessageSerializer(chat_id=self.user.chat_id, text=msg.text)
         self.bot.send_message(serialized_data)
 
-    def get_email_and_phone(self) -> None:
+    async def get_email_and_phone(self) -> None:
         accounts = self.process_user_email_phone_data()
         if accounts:
             GmailAccountManager().create(accounts)
