@@ -67,7 +67,10 @@ class BaseHandler:
         self.bot.send_message(msg)
 
     async def handler(self):
-        text_msg = MessageManager().get_related_msg(key=self.update.message.text)
+        text_msg = None
+        if self.update.message.text:
+            text_msg = MessageManager().get_related_msg(key=self.update.message.text)
+
         if text_msg:
             UserManager().update(self.user.chat_id, step=text_msg.current_step)
             return await UserTextHandler(self).run(text_msg)
