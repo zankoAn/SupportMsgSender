@@ -66,18 +66,18 @@ class BaseHandler:
         )
         self.bot.send_message(msg)
 
-    def handler(self):
+    async def handler(self):
         text_msg = MessageManager().get_related_msg(key=self.update.message.text)
         if text_msg:
             UserManager().update(self.user.chat_id, step=text_msg.current_step)
-            return UserTextHandler(self).run(text_msg)
+            return await UserTextHandler(self).run(text_msg)
         else:
-            return UserStepHandler(self).run()
+            return await UserStepHandler(self).run()
 
-    def run(self):
+    async def run(self):
         self.add_new_user()
         if not self.is_superuser(): return
-        self.handler()
+        await self.handler()
 
 class UserTextHandler(BaseHandler):
 
@@ -89,17 +89,17 @@ class UserTextHandler(BaseHandler):
         msg = MessageManager().get_related_msg(current_step=msg.current_step)
         return msg
 
-    def handler(self, msg):
+    async def handler(self, msg):
         chat_id = self.update.message.chat.id
         if update_text_method := getattr(self, msg.current_step, None):
-            msg = update_text_method(msg)
+            msg = await update_text_method(msg)
 
         key = self.generate_keyboards(msg)
         serialized_data = SendMessageSerializer(chat_id=chat_id, text=msg.text, reply_markup=key)
         self.bot.send_message(serialized_data)
 
-    def run(self, text_msg):
-        self.handler(text_msg)
+    async def run(self, text_msg):
+        await self.handler(text_msg)
 
 
 class UserStepHandler(BaseHandler):
@@ -155,13 +155,13 @@ class UserStepHandler(BaseHandler):
             GmailAccountManager().create(accounts)
             self.send_success_message("add_data_success")
 
-    def get_ticket_msg(self) -> None:
+    async def get_ticket_msg(self) -> None:
         base_path = Path(__file__).resolve().parent.parent
         file_path = base_path / "tmp/ticket_msg.txt"
         self.save_file_contents(file_path)
         self.send_success_message("add_data_success")
 
-    def get_proxies(self) -> None:
+    async def get_proxies(self) -> None:
         if not self.update.message.document:
             try:
                 host, port, ip, passwd = self.update.message.text.split(":")
@@ -174,7 +174,7 @@ class UserStepHandler(BaseHandler):
         self.save_file_contents(file_path)
         self.send_success_message("add_data_success")
 
-    def get_order_send_count(self) -> None:
+    async def get_order_send_count(self) -> None:
         try:
             text = self.update.message.text
             order_count = int(text)
@@ -189,7 +189,7 @@ class UserStepHandler(BaseHandler):
         text_msg = SendMessageSerializer(chat_id=chat_id, text=msg.text)
         self.bot.send_message(text_msg)
 
-    def get_order_sleep_time(self) -> None:
+    async def get_order_sleep_time(self) -> None:
         try:
             text = self.update.message.text
             start, end = map(int, text.split("-"))
@@ -198,14 +198,14 @@ class UserStepHandler(BaseHandler):
         except ValueError as error:
             return self.handle_exception(error)
 
-        TicketProcessingHandler(self).run()
+        await TicketProcessingHandler(self).run()
 
-    def handler(self) -> None:
+    async def handler(self) -> None:
         if callback := self.steps.get(self.user.step):
-            callback()
+            await callback()
 
-    def run(self) -> None:
-        self.handler()
+    async def run(self) -> None:
+        await self.handler()
 
 
 class TicketProcessingHandler(BaseHandler):
@@ -277,8 +277,7 @@ class TicketProcessingHandler(BaseHandler):
         except Exception as error:
             self.handle_exception(error)
 
-    def run(self) -> None:
+    async def run(self) -> None:
         self.update_order_and_user_step()
         order, emails = self.get_order_and_emails()
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.process_tickets(emails, order))
+        await self.process_tickets(emails, order)

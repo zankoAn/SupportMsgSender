@@ -10,7 +10,7 @@ app = FastAPI(debug=True)
 async def webhook(update: UpdateSerializer):
     try:
         if update.message:
-            return BaseHandler(update).run()
+            return (await BaseHandler(update).run())
 
         if update.callback_query:
             ...
